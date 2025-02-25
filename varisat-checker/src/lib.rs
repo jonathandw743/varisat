@@ -121,14 +121,17 @@ impl<'a> Checker<'a> {
     /// Add a [`ProofProcessor`].
     ///
     /// This has to be called before loading any clauses or checking any proofs.
-    pub fn add_processor(&mut self, processor: &'a mut dyn ProofProcessor) {
+    pub fn add_processor(&mut self, processor: &'a mut (dyn ProofProcessor + Send + Sync)) {
         self.ctx.processing.processors.push(processor);
     }
 
     /// Add a [`ProofTranscriptProcessor`].
     ///
     /// This has to be called before loading any clauses or checking any proofs.
-    pub fn add_transcript(&mut self, processor: &'a mut dyn ProofTranscriptProcessor) {
+    pub fn add_transcript(
+        &mut self,
+        processor: &'a mut (dyn ProofTranscriptProcessor + Send + Sync),
+    ) {
         self.ctx.processing.transcript_processors.push(processor);
     }
 

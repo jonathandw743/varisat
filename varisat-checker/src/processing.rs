@@ -146,9 +146,9 @@ pub trait ProofProcessor {
 #[derive(Default)]
 pub struct Processing<'a> {
     /// Registered proof processors.
-    pub processors: Vec<&'a mut dyn ProofProcessor>,
+    pub processors: Vec<&'a mut (dyn ProofProcessor + Send + Sync)>,
     /// Registered transcript processors.
-    pub transcript_processors: Vec<&'a mut dyn ProofTranscriptProcessor>,
+    pub transcript_processors: Vec<&'a mut (dyn ProofTranscriptProcessor + Send + Sync)>,
     /// Proof step to transcript step conversion.
     transcript: transcript::Transcript,
 }

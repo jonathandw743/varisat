@@ -57,7 +57,7 @@ pub fn clause_count_delta(step: &ProofStep) -> isize {
 /// Proof generation.
 pub struct Proof<'a> {
     format: Option<ProofFormat>,
-    target: BufWriter<Box<dyn Write + 'a>>,
+    target: BufWriter<Box<dyn Write + Send + Sync + 'a>>,
     checker: Option<Checker<'a>>,
     map_step: map_step::MapStep,
     /// How many bits are used for storing clause hashes.
@@ -83,7 +83,7 @@ impl<'a> Default for Proof<'a> {
 
 impl<'a> Proof<'a> {
     /// Start writing proof steps to the given target with the given format.
-    pub fn write_proof(&mut self, target: impl Write + 'a, format: ProofFormat) {
+    pub fn write_proof(&mut self, target: impl Write + Send + Sync + 'a, format: ProofFormat) {
         self.format = Some(format);
         self.target = BufWriter::new(Box::new(target))
     }
@@ -98,7 +98,7 @@ impl<'a> Proof<'a> {
     /// Add a [`ProofProcessor`].
     ///
     /// See also [`Checker::add_processor`].
-    pub fn add_processor(&mut self, processor: &'a mut dyn ProofProcessor) {
+    pub fn add_processor(&mut self, processor: &'a mut (dyn ProofProcessor + Send + Sync)) {
         self.begin_checking();
         self.checker.as_mut().unwrap().add_processor(processor);
     }
