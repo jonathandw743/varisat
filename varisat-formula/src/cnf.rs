@@ -147,7 +147,7 @@ pub struct NewVarIter<'a, F, V = Var> {
     phantom: std::marker::PhantomData<V>,
 }
 
-impl<'a, F, V> Iterator for NewVarIter<'a, F, V>
+impl<F, V> Iterator for NewVarIter<'_, F, V>
 where
     F: ExtendFormula,
     V: From<Var>,

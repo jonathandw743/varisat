@@ -3,18 +3,15 @@ use crate::solver::SolverError;
 
 /// Satisfiability state.
 #[derive(Copy, Clone, Eq, PartialEq, Debug)]
+#[derive(Default)]
 pub enum SatState {
+    #[default]
     Unknown,
     Sat,
     Unsat,
     UnsatUnderAssumptions,
 }
 
-impl Default for SatState {
-    fn default() -> SatState {
-        SatState::Unknown
-    }
-}
 
 /// Miscellaneous solver state.
 ///

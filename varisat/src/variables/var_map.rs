@@ -95,7 +95,7 @@ pub struct VarBiMapMut<'a> {
     bwd: &'a mut VarMap,
 }
 
-impl<'a> VarBiMapMut<'a> {
+impl VarBiMapMut<'_> {
     /// Insert a new mapping.
     ///
     /// Note that the parameters are reversed from the usual order, to match the naming convention

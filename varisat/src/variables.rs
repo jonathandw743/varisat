@@ -19,6 +19,7 @@ use data::{SamplingMode, VarData};
 use var_map::{VarBiMap, VarBiMapMut, VarMap};
 
 /// Variable mapping and metadata.
+#[derive(Default)]
 pub struct Variables {
     /// Bidirectional mapping from user variables to global variables.
     ///
@@ -47,19 +48,6 @@ pub struct Variables {
     var_data: Vec<VarData>,
 }
 
-impl Default for Variables {
-    fn default() -> Variables {
-        Variables {
-            global_from_user: VarBiMap::default(),
-            solver_from_global: VarBiMap::default(),
-            user_freelist: Default::default(),
-            global_freelist: Default::default(),
-            solver_freelist: Default::default(),
-
-            var_data: vec![],
-        }
-    }
-}
 
 impl Variables {
     /// Number of allocated solver variables.
@@ -78,7 +66,7 @@ impl Variables {
     }
 
     /// Iterator over all user variables that are in use.
-    pub fn user_var_iter<'a>(&'a self) -> impl Iterator<Item = Var> + 'a {
+    pub fn user_var_iter(&self) -> impl Iterator<Item = Var> + '_ {
         let global_from_user = self.global_from_user.fwd();
         (0..self.global_from_user().watermark())
             .map(Var::from_index)
@@ -86,7 +74,7 @@ impl Variables {
     }
 
     /// Iterator over all global variables that are in use.
-    pub fn global_var_iter<'a>(&'a self) -> impl Iterator<Item = Var> + 'a {
+    pub fn global_var_iter(&self) -> impl Iterator<Item = Var> + '_ {
         (0..self.global_watermark())
             .map(Var::from_index)
             .filter(move |&global_var| !self.var_data[global_var.index()].deleted)
@@ -94,7 +82,7 @@ impl Variables {
 
     /// The user to global mapping.
     pub fn global_from_user(&self) -> &VarMap {
-        &self.global_from_user.fwd()
+        self.global_from_user.fwd()
     }
 
     /// Mutable user to global mapping.
@@ -104,7 +92,7 @@ impl Variables {
 
     /// The global to solver mapping.
     pub fn solver_from_global(&self) -> &VarMap {
-        &self.solver_from_global.fwd()
+        self.solver_from_global.fwd()
     }
 
     /// Mutable global to solver mapping.
@@ -114,7 +102,7 @@ impl Variables {
 
     /// The global to user mapping.
     pub fn user_from_global(&self) -> &VarMap {
-        &self.global_from_user.bwd()
+        self.global_from_user.bwd()
     }
 
     /// Mutable global to user mapping.
@@ -124,7 +112,7 @@ impl Variables {
 
     /// The solver to global mapping.
     pub fn global_from_solver(&self) -> &VarMap {
-        &self.solver_from_global.bwd()
+        self.solver_from_global.bwd()
     }
 
     /// Mutable  solver to global mapping.
@@ -620,7 +608,7 @@ mod tests {
 
             for clause in unsat_formula.iter() {
                 tmp.clear();
-                tmp.extend_from_slice(&clause);
+                tmp.extend_from_slice(clause);
                 tmp.push(cond.negative());
                 solver.add_clause(&tmp);
             }

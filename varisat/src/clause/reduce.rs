@@ -1,5 +1,4 @@
 //! Clause database reduction.
-use std::mem::replace;
 
 use ordered_float::OrderedFloat;
 use vec_mut_scan::VecMutScan;
@@ -51,10 +50,7 @@ pub fn reduce_locals<'a>(
 ) {
     dedup_and_mark_by_tier(ctx.borrow(), Tier::Local);
 
-    let mut locals = replace(
-        &mut ctx.part_mut(ClauseDbP).by_tier[Tier::Local as usize],
-        vec![],
-    );
+    let mut locals = std::mem::take(&mut ctx.part_mut(ClauseDbP).by_tier[Tier::Local as usize]);
 
     locals.sort_unstable_by_key(|&cref| {
         (
@@ -109,10 +105,7 @@ pub fn reduce_locals<'a>(
 pub fn reduce_mids(mut ctx: partial!(Context, mut ClauseAllocP, mut ClauseDbP)) {
     dedup_and_mark_by_tier(ctx.borrow(), Tier::Mid);
 
-    let mut mids = replace(
-        &mut ctx.part_mut(ClauseDbP).by_tier[Tier::Mid as usize],
-        vec![],
-    );
+    let mut mids = std::mem::take(&mut ctx.part_mut(ClauseDbP).by_tier[Tier::Mid as usize]);
 
     mids.retain(|&cref| {
         let header = ctx.part_mut(ClauseAllocP).header_mut(cref);

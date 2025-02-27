@@ -24,17 +24,17 @@ use std::{
 
 /// Write an encoded 64 bit number.
 pub fn write_u64(target: &mut impl Write, mut value: u64) -> Result<(), io::Error> {
-    let bits = (64 - value.leading_zeros()) as u32;
+    let bits = 64 - value.leading_zeros();
     let blocks = (bits * (64 / 7)) / 64;
     if value < (1 << (8 * 7)) {
         value = ((value << 1) | 1) << blocks;
-        let bytes = unsafe { std::mem::transmute::<u64, [u8; 8]>(value.to_le()) };
+        let bytes = value.to_le().to_ne_bytes();
         target.write_all(&bytes[..(blocks + 1) as usize])
     } else {
         let lo_data = ((value << 1) | 1) << blocks;
-        let lo_bytes = unsafe { std::mem::transmute::<u64, [u8; 8]>(lo_data.to_le()) };
+        let lo_bytes = lo_data.to_le().to_ne_bytes();
         let hi_data = value >> (64 - (blocks + 1));
-        let hi_bytes = unsafe { std::mem::transmute::<u64, [u8; 8]>(hi_data.to_le()) };
+        let hi_bytes = hi_data.to_le().to_ne_bytes();
 
         target.write_all(&lo_bytes)?;
         target.write_all(&hi_bytes[..(blocks as usize) + 1 - 8])
@@ -101,7 +101,7 @@ pub fn read_u64(source: &mut impl BufRead) -> Result<u64, io::Error> {
             result |= (byte[0] as u64) << (8 * i - len);
         }
 
-        Ok(result as u64)
+        Ok(result)
     }
 }
 

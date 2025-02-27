@@ -262,13 +262,13 @@ impl<'a> Solver<'a> {
     }
 }
 
-impl<'a> Drop for Solver<'a> {
+impl Drop for Solver<'_> {
     fn drop(&mut self) {
         let _ = self.close_proof();
     }
 }
 
-impl<'a> ExtendFormula for Solver<'a> {
+impl ExtendFormula for Solver<'_> {
     /// Add a clause to the solver.
     fn add_clause(&mut self, clause: &[Lit]) {
         let mut ctx = self.ctx.into_partial_ref_mut();

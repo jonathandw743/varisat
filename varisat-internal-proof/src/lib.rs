@@ -129,7 +129,7 @@ pub enum ProofStep<'a> {
     End,
 }
 
-impl<'a> ProofStep<'a> {
+impl ProofStep<'_> {
     /// Does this proof step use clause hashes?
     pub fn contains_hashes(&self) -> bool {
         match self {

@@ -128,7 +128,7 @@ impl ClauseHeader {
 
     /// Clause [activity][crate::clause::activity].
     pub fn activity(&self) -> f32 {
-        f32::from_bits(self.data[ACTIVITY_WORD] as u32)
+        f32::from_bits(self.data[ACTIVITY_WORD])
     }
 
     /// Update clause [activity][crate::clause::activity].

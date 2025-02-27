@@ -150,7 +150,7 @@ mod tests {
                 let cref = db::add_clause(ctx.borrow(), header, lits);
                 crefs_b.push(cref);
 
-                if ctx.part(AssignmentP).lit_value(lits[0]) == None {
+                if ctx.part(AssignmentP).lit_value(lits[0]).is_none() {
                     // This isn't consistent, as the clause isn't actually propagating, but that
                     // isn't checked during garbage collection
                     enqueue_assignment(ctx.borrow(), lits[0], Reason::Long(cref));

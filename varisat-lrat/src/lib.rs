@@ -1,8 +1,5 @@
 //! LRAT proof generation for the Varisat SAT solver.
-use std::{
-    io::{BufWriter, Write},
-    mem::replace,
-};
+use std::io::{BufWriter, Write};
 
 use anyhow::Error;
 
@@ -18,14 +15,14 @@ pub struct WriteLrat<'a> {
     buffered_deletes: Vec<u64>,
 }
 
-impl<'a> ProofProcessor for WriteLrat<'a> {
+impl ProofProcessor for WriteLrat<'_> {
     fn process_step(&mut self, step: &CheckedProofStep, _data: CheckerData) -> Result<(), Error> {
         match step {
             CheckedProofStep::AddClause { .. } => (),
             CheckedProofStep::DuplicatedClause { .. } => (),
             _ => {
                 if !self.buffered_deletes.is_empty() {
-                    let buffered_deletes = replace(&mut self.buffered_deletes, vec![]);
+                    let buffered_deletes = std::mem::take(&mut self.buffered_deletes);
                     self.open_delete()?;
                     self.write_ids(&buffered_deletes)?;
                 }
@@ -209,7 +206,7 @@ impl<'a> WriteLrat<'a> {
     }
 }
 
-impl<'a> Drop for WriteLrat<'a> {
+impl Drop for WriteLrat<'_> {
     fn drop(&mut self) {
         let _ignore_errors = self.close_delete();
     }

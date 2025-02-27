@@ -10,7 +10,7 @@ fn drat_step(
 ) -> io::Result<()> {
     match step {
         ProofStep::AtClause { clause, .. } => {
-            emit_drat_step(true, &clause)?;
+            emit_drat_step(true, clause)?;
         }
         ProofStep::UnitClauses { units } => {
             for &(unit, _hash) in units.iter() {
@@ -46,7 +46,7 @@ pub fn write_step<'s>(target: &mut impl Write, step: &'s ProofStep<'s>) -> io::R
         if !add {
             target.write_all(b"d ")?;
         }
-        write_literals(target, &clause[..])?;
+        write_literals(target, clause)?;
         Ok(())
     })
 }
@@ -59,7 +59,7 @@ pub fn write_binary_step<'s>(target: &mut impl Write, step: &'s ProofStep<'s>) -
         } else {
             target.write_all(b"d")?;
         }
-        write_binary_literals(target, &clause[..])?;
+        write_binary_literals(target, clause)?;
         Ok(())
     })
 }

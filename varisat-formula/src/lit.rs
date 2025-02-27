@@ -58,7 +58,7 @@ impl Var {
     pub const fn max_var() -> Var {
         // Allow for sign or tag bits
         Var {
-            index: LitIdx::max_value() >> 4,
+            index: LitIdx::MAX >> 4,
         }
     }
 

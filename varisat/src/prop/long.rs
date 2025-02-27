@@ -147,7 +147,7 @@ pub fn propagate_long(
                 let out_size = ((watch_write as usize) - (watch_begin as usize))
                     / std::mem::size_of::<Watch>();
 
-                watchlists.watched_by_mut(lit).truncate(out_size as usize);
+                watchlists.watched_by_mut(lit).truncate(out_size);
 
                 return Err(Conflict::Long(cref));
             }
@@ -158,7 +158,7 @@ pub fn propagate_long(
 
         let out_size =
             ((watch_write as usize) - (watch_begin as usize)) / std::mem::size_of::<Watch>();
-        watchlists.watched_by_mut(lit).truncate(out_size as usize);
+        watchlists.watched_by_mut(lit).truncate(out_size);
     }
     Ok(())
 }

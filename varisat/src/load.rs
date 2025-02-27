@@ -68,7 +68,7 @@ pub fn load_clause<'a>(
     lits.sort_unstable();
     lits.dedup();
 
-    proof::add_clause(ctx.borrow(), &lits);
+    proof::add_clause(ctx.borrow(), lits);
 
     // Detect tautological clauses
     let mut last = None;
@@ -129,7 +129,7 @@ pub fn load_clause<'a>(
         resurrect_unit(ctx.borrow(), !lit);
     }
 
-    lits.extend_from_slice(&false_lits);
+    lits.extend_from_slice(false_lits);
 
     if clause_is_true {
         if lits.len() > 1 {

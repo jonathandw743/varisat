@@ -231,8 +231,8 @@ mod tests {
 
         set_var_count(ctx.borrow(), clauses.var_count());
 
-        let tiers = vec![Tier::Irred, Tier::Core, Tier::Mid, Tier::Local];
-        let new_tiers = vec![Tier::Irred, Tier::Local, Tier::Local, Tier::Core];
+        let tiers = [Tier::Irred, Tier::Core, Tier::Mid, Tier::Local];
+        let new_tiers = [Tier::Irred, Tier::Local, Tier::Local, Tier::Core];
 
         let mut crefs = vec![];
 

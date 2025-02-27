@@ -79,7 +79,7 @@ impl ClauseAlloc {
     pub fn header(&self, cref: ClauseRef) -> &ClauseHeader {
         let offset = cref.offset as usize;
         assert!(
-            offset as usize + HEADER_LEN <= self.buffer.len(),
+            offset + HEADER_LEN <= self.buffer.len(),
             "ClauseRef out of bounds"
         );
         unsafe { self.header_unchecked(cref) }
@@ -89,7 +89,7 @@ impl ClauseAlloc {
     pub fn header_mut(&mut self, cref: ClauseRef) -> &mut ClauseHeader {
         let offset = cref.offset as usize;
         assert!(
-            offset as usize + HEADER_LEN <= self.buffer.len(),
+            offset + HEADER_LEN <= self.buffer.len(),
             "ClauseRef out of bounds"
         );
         unsafe { self.header_unchecked_mut(cref) }

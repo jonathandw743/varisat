@@ -141,8 +141,7 @@ impl Trail {
 
     /// The number of assignments at level 0.
     pub fn top_level_assignment_count(&self) -> usize {
-        self.decisions
-            .get(0)
+        self.decisions.first()
             .map(|&len| len as usize)
             .unwrap_or(self.trail.len())
             + self.units_removed
@@ -164,7 +163,7 @@ pub fn enqueue_assignment(
     reason: Reason,
 ) {
     let assignment = ctx.part_mut(AssignmentP);
-    debug_assert!(assignment.lit_value(lit) == None);
+    debug_assert!(assignment.lit_value(lit).is_none());
 
     assignment.assign_lit(lit);
 
