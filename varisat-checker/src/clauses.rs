@@ -436,9 +436,7 @@ fn collect_garbage(mut ctx: partial!(Context, mut ClausesP)) {
         return;
     }
 
-    let mut new_buffer = vec![];
-
-    new_buffer.reserve(clauses.literal_buffer.len());
+    let mut new_buffer = Vec::with_capacity(clauses.literal_buffer.len());
 
     for (_, candidates) in clauses.clauses.iter_mut() {
         for clause in candidates.iter_mut() {

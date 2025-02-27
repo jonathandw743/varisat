@@ -188,7 +188,7 @@ impl ClauseRef {
     /// The largest offset supported by the ClauseAlloc
     const fn max_offset() -> ClauseOffset {
         // Make sure we can savely add a length to an offset without overflowing usize
-        ((usize::max_value() >> 1) & (ClauseOffset::max_value() as usize)) as ClauseOffset
+        ((usize::MAX >> 1) & (ClauseOffset::MAX as usize)) as ClauseOffset
     }
 }
 

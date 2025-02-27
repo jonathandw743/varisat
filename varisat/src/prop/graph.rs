@@ -125,10 +125,10 @@ impl ImplGraph {
     pub fn update_removed_unit(&mut self, var: Var) {
         let node = &mut self.nodes[var.index()];
         node.reason = Reason::Unit;
-        node.depth = LitIdx::max_value();
+        node.depth = LitIdx::MAX;
     }
 
     pub fn is_removed_unit(&self, var: Var) -> bool {
-        self.nodes[var.index()].depth == LitIdx::max_value()
+        self.nodes[var.index()].depth == LitIdx::MAX
     }
 }

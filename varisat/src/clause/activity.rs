@@ -39,7 +39,7 @@ impl ClauseActivity {
 
 /// Rescale activities if any value exceeds this value.
 fn rescale_limit() -> f32 {
-    std::f32::MAX / 16.0
+    f32::MAX / 16.0
 }
 
 /// Increase a clause's activity.

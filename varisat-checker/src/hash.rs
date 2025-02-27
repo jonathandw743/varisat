@@ -36,7 +36,7 @@ impl Default for ClauseHasher {
 impl ClauseHasher {
     /// Compute a clause hash of the current bit size
     pub fn clause_hash(&self, lits: &[Lit]) -> ClauseHash {
-        let shift_bits = ClauseHash::max_value().count_ones() - self.hash_bits;
+        let shift_bits = ClauseHash::MAX.count_ones() - self.hash_bits;
         let mut hash = 0;
         for &lit in lits.iter() {
             match self.solver_var_names.get(&lit.var()) {

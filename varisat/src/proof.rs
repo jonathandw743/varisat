@@ -245,7 +245,7 @@ fn write_varisat_step<'a, 's>(
         )?;
     }
 
-    let shift_bits = ClauseHash::max_value().count_ones() - proof.hash_bits;
+    let shift_bits = ClauseHash::MAX.count_ones() - proof.hash_bits;
 
     let map_hash = |hash| hash >> shift_bits;
     let step = proof.map_step.map(step, map_vars, map_hash);

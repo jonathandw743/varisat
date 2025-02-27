@@ -19,7 +19,9 @@ pub struct Assignment {
 
 /// This compares two `Option<bool>` values as bytes. Workaround for bad code generation.
 pub fn fast_option_eq(a: Option<bool>, b: Option<bool>) -> bool {
-    unsafe { std::mem::transmute::<_, u8>(a) == std::mem::transmute::<_, u8>(b) }
+    unsafe {
+        std::mem::transmute::<Option<bool>, u8>(a) == std::mem::transmute::<Option<bool>, u8>(b)
+    }
 }
 
 impl Assignment {
@@ -141,7 +143,8 @@ impl Trail {
 
     /// The number of assignments at level 0.
     pub fn top_level_assignment_count(&self) -> usize {
-        self.decisions.first()
+        self.decisions
+            .first()
             .map(|&len| len as usize)
             .unwrap_or(self.trail.len())
             + self.units_removed
