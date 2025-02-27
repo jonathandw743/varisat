@@ -19,7 +19,7 @@ pub trait SelfChecker {
     fn self_check_delayed_steps(&mut self) -> Result<(), CheckerError>;
 }
 
-impl<'a> SelfChecker for Checker<'a> {
+impl SelfChecker for Checker<'_> {
     fn self_check_step(&mut self, step: ProofStep) -> Result<(), CheckerError> {
         self.ctx.checker_state.step += 1;
         let mut ctx = self.ctx.into_partial_ref_mut();

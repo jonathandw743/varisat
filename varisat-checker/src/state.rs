@@ -1,6 +1,6 @@
 //! Checker state and checking of proof steps.
 
-use std::{io, mem::replace};
+use std::io;
 
 use partial_ref::{partial, PartialRef};
 use rustc_hash::FxHashSet as HashSet;
@@ -272,7 +272,7 @@ fn check_at_clause_step<'a>(
     clause: &[Lit],
     propagation_hashes: &[ClauseHash],
 ) -> Result<(), CheckerError> {
-    let mut tmp = replace(&mut ctx.part_mut(TmpDataP).tmp, vec![]);
+    let mut tmp = std::mem::take(&mut ctx.part_mut(TmpDataP).tmp);
 
     if copy_canonical(&mut tmp, clause) {
         return Err(CheckerError::check_failed(
@@ -281,7 +281,7 @@ fn check_at_clause_step<'a>(
         ));
     }
 
-    check_clause_with_hashes(ctx.borrow(), &tmp, &*propagation_hashes)?;
+    check_clause_with_hashes(ctx.borrow(), &tmp, propagation_hashes)?;
 
     let (id, added) = store_clause(ctx.borrow(), &tmp, redundant);
 
@@ -333,7 +333,7 @@ fn check_delete_clause_step<'a>(
     clause: &[Lit],
     proof: DeleteClauseProof,
 ) -> Result<(), CheckerError> {
-    let mut tmp = replace(&mut ctx.part_mut(TmpDataP).tmp, vec![]);
+    let mut tmp = std::mem::take(&mut ctx.part_mut(TmpDataP).tmp);
 
     if copy_canonical(&mut tmp, clause) {
         return Err(CheckerError::check_failed(
@@ -505,7 +505,7 @@ fn check_model_step<'a>(
     for (_, candidates) in ctx.part(ClausesP).clauses.iter() {
         for clause in candidates.iter() {
             let lits = clause.lits.slice(&ctx.part(ClausesP).literal_buffer);
-            if !lits.iter().any(|lit| assignments.contains(&lit)) {
+            if !lits.iter().any(|lit| assignments.contains(lit)) {
                 return Err(CheckerError::check_failed(
                     ctx.part(CheckerStateP).step,
                     format!("model does not satisfy clause {:?}", lits),
@@ -534,7 +534,7 @@ fn check_failed_assumptions_step<'a>(
     failed_core: &[Lit],
     propagation_hashes: &[ClauseHash],
 ) -> Result<(), CheckerError> {
-    let mut tmp = replace(&mut ctx.part_mut(TmpDataP).tmp, vec![]);
+    let mut tmp = std::mem::take(&mut ctx.part_mut(TmpDataP).tmp);
 
     let direct_conflict = copy_canonical(&mut tmp, failed_core);
 

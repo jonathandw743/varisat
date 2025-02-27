@@ -250,14 +250,14 @@ pub fn store_clause(
         }
         [lit] => store_unit_clause(ctx.borrow(), lit),
         _ => {
-            let hash = ctx.part(ClauseHasherP).clause_hash(&lits);
+            let hash = ctx.part(ClauseHasherP).clause_hash(lits);
 
             let (clauses, mut ctx) = ctx.split_part_mut(ClausesP);
 
             let candidates = clauses.clauses.entry(hash).or_default();
 
             for candidate in candidates.iter_mut() {
-                if candidate.lits.slice(&clauses.literal_buffer) == &lits[..] {
+                if candidate.lits.slice(&clauses.literal_buffer) == lits {
                     let result = if !redundant && candidate.ref_count[0] == 0 {
                         // first irredundant copy
                         StoreClauseResult::NewlyIrredundant
@@ -279,7 +279,7 @@ pub fn store_clause(
             candidates.push(Clause {
                 id,
                 ref_count,
-                lits: ClauseLits::new(&lits, &mut clauses.literal_buffer),
+                lits: ClauseLits::new(lits, &mut clauses.literal_buffer),
             });
 
             clauses.next_clause_id += 1;

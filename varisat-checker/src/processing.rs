@@ -113,7 +113,7 @@ pub struct ResolutionPropagations {
 #[derive(Copy, Clone)]
 pub struct CheckerData<'a, 'b>(pub partial!('a Context<'b>, VariablesP));
 
-impl<'a, 'b> CheckerData<'a, 'b> {
+impl CheckerData<'_, '_> {
     /// User variable corresponding to proof variable.
     ///
     /// Returns `None` if the proof variable is an internal or hidden variable.
@@ -153,11 +153,11 @@ pub struct Processing<'a> {
     transcript: transcript::Transcript,
 }
 
-impl<'a> Processing<'a> {
+impl Processing<'_> {
     /// Process a single step
-    pub fn step<'b>(
+    pub fn step(
         &mut self,
-        step: &CheckedProofStep<'b>,
+        step: &CheckedProofStep<'_>,
         data: CheckerData,
     ) -> Result<(), CheckerError> {
         for processor in self.processors.iter_mut() {
