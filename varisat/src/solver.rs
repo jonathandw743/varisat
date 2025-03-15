@@ -206,6 +206,21 @@ impl<'a> Solver<'a> {
         }
     }
 
+    /// Literal of one variable that satisfies the formula.
+    pub fn model_one(&self, user_var: Var) -> Option<Lit> {
+        let ctx = self.ctx.into_partial_ref();
+        if ctx.part(SolverStateP).sat_state == SatState::Sat {
+            return None;
+        }
+        let global_var = ctx
+            .part(VariablesP)
+            .global_from_user()
+            .get(user_var)
+            .expect("no existing global var for user var");
+        ctx.part(ModelP).assignment()[global_var.index()]
+            .map(|value| user_var.lit(value))
+    }
+
     /// Subset of the assumptions that made the formula unsatisfiable.
     ///
     /// This is not guaranteed to be minimal and may just return all assumptions every time.
