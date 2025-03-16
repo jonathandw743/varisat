@@ -184,6 +184,8 @@ impl<'a> Solver<'a> {
     }
 
     /// Set of literals that satisfy the formula.
+    /// None means SatState is not Sat
+    /// if a Var is not valid it will not be included in the model
     pub fn model(&self) -> Option<Vec<Lit>> {
         let ctx = self.ctx.into_partial_ref();
         if ctx.part(SolverStateP).sat_state == SatState::Sat {
@@ -207,18 +209,29 @@ impl<'a> Solver<'a> {
     }
 
     /// Literal of one variable that satisfies the formula.
-    pub fn model_one(&self, user_var: Var) -> Option<Lit> {
-        let ctx = self.ctx.into_partial_ref();
-        if ctx.part(SolverStateP).sat_state == SatState::Sat {
-            return None;
+    /// None means the Var is not valid or UnSat or UnsatUnderAssumptions or SolverError
+    /// Automatically solves depending on SatState
+    pub fn model_one(&mut self, user_var: Var) -> Option<Lit> {
+        let sat_state = self.ctx.into_partial_ref().part(SolverStateP).sat_state;
+        match sat_state {
+            SatState::Unknown => {
+                self.solve().ok()?;
+            }
+            SatState::Sat => {}
+            SatState::Unsat => {
+                return None;
+            }
+            SatState::UnsatUnderAssumptions => {
+                return None;
+            }
         }
+        let ctx = self.ctx.into_partial_ref();
         let global_var = ctx
             .part(VariablesP)
             .global_from_user()
             .get(user_var)
             .expect("no existing global var for user var");
-        ctx.part(ModelP).assignment()[global_var.index()]
-            .map(|value| user_var.lit(value))
+        ctx.part(ModelP).assignment()[global_var.index()].map(|value| user_var.lit(value))
     }
 
     /// Subset of the assumptions that made the formula unsatisfiable.
