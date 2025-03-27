@@ -231,7 +231,10 @@ impl<'a> Solver<'a> {
             .global_from_user()
             .get(user_var)
             .expect("no existing global var for user var");
-        ctx.part(ModelP).assignment()[global_var.index()].map(|value| user_var.lit(value))
+        ctx.part(ModelP)
+            .assignment()
+            .get(global_var.index())?
+            .map(|value| user_var.lit(value))
     }
 
     /// Subset of the assumptions that made the formula unsatisfiable.
